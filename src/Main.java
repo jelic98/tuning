@@ -236,13 +236,25 @@ public class Main {
                     System.arraycopy(oldNumbers, 0, numbers, 0, oldNumbers.length);
                     numbers[oldNumbers.length] = numberValue;
 
-                    classes.remove(classValue);
+                    classes.remove(classValue, oldNumbers);
                     classes.put(classValue, numbers);
                 }
+            }
 
-//                for(String element : classes.keySet()) {
-//                    w.println(element + " " + Arrays.toString(classes.get(element)));
-//                }
+            for(String classValue : classes.keySet()) {
+                String[] numbers = classes.get(classValue);
+
+                for(int i = 0; i < numbers.length; i++) {
+                    String[] data = competitors.get(numbers[i]);
+
+                    String nameValue = data[0];
+                    String vehicleValue = data[1];
+                    String ratedValue = data[3];
+
+                    if(ratedValue.equals("YES")) {
+                        //todo get rating file, calculate rating, sort array
+                    }
+                }
             }
 
             w.close();
