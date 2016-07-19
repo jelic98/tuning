@@ -33,6 +33,12 @@
               <text value="Load"/>
             </properties>
           </component>
+          <component id="f1115" class="javax.swing.JButton" binding="bExport">
+            <constraints/>
+            <properties>
+              <text value="Export"/>
+            </properties>
+          </component>
           <component id="c2955" class="javax.swing.JButton" binding="bResults">
             <constraints/>
             <properties>

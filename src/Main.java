@@ -1,3 +1,5 @@
+import org.apache.commons.io.FileUtils;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -12,14 +14,14 @@ import java.util.*;
 
 public class Main {
     private JPanel panel;
-    private JButton bSave, bLoad, bResults, bAdd, bRemove;
+    private JButton bSave, bLoad, bResults, bAdd, bRemove, bExport;
     private JLabel lEcloga;
     private String directoryName = System.getProperty("user.home") + "/TuningRef";
     private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private Date date = new Date();
     private String session = dateFormat.format(date);
-    private boolean exportStatus, importStatus;
-    private String importDirectory;
+    private boolean saveStatus, loadStatus;
+    private String loadDirectory;
     public static boolean tableShown;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static Map<String, String[]> classes = new HashMap<String, String[]>();
@@ -58,28 +60,28 @@ public class Main {
         bSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                exportStatus = true;
+                saveStatus = true;
 
                 createProgramDirectory();
 
-                if(exportStatus) {
+                if(saveStatus) {
                     createSessionDirectory();
                 }
 
-                if(exportStatus) {
+                if(saveStatus) {
                     createRatingDirectory();
                 }
 
-                if(exportStatus) {
+                if(saveStatus) {
                     createRatingFiles();
                 }
 
-                if(exportStatus) {
+                if(saveStatus) {
                     createListFile();
                 }
 
-                if(exportStatus) {
-                    JOptionPane.showMessageDialog(null, "Data is successfully exported", "Success", JOptionPane.INFORMATION_MESSAGE);
+                if(saveStatus) {
+                    JOptionPane.showMessageDialog(null, "Data is successfully saved", "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -87,13 +89,13 @@ public class Main {
         bLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                importStatus = true;
-                importDirectory = "";
+                loadStatus = true;
+                loadDirectory = "";
 
-                importData();
+                loadData();
 
-                if(importStatus) {
-                    importRatings();
+                if(loadStatus) {
+                    loadRatings();
                 }
             }
         });
@@ -102,6 +104,13 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createResultFile();
+            }
+        });
+
+        bExport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportData();
             }
         });
     }
@@ -142,7 +151,7 @@ public class Main {
                 boolean created = file.mkdir();
 
                 if(!created) {
-                    exportStatus = false;
+                    saveStatus = false;
                     JOptionPane.showMessageDialog(null, "Program directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }catch(Exception e) {
@@ -158,7 +167,7 @@ public class Main {
                 boolean created = file.mkdir();
 
                 if (!created) {
-                    exportStatus = false;
+                    saveStatus = false;
                     JOptionPane.showMessageDialog(null, "Session directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }catch(Exception e) {
@@ -175,7 +184,7 @@ public class Main {
                 boolean created = dir.mkdir();
 
                 if(!created) {
-                    exportStatus = false;
+                    saveStatus = false;
                     JOptionPane.showMessageDialog(null, "Rating directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }catch(Exception e) {
@@ -288,7 +297,7 @@ public class Main {
         }
     }
 
-    private void importData() {
+    private void loadData() {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File(directoryName));
         chooser.setDialogTitle("Select session folder");
@@ -296,7 +305,7 @@ public class Main {
         chooser.setAcceptAllFileFilterUsed(false);
 
         if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            importDirectory = String.valueOf(chooser.getSelectedFile());
+            loadDirectory = String.valueOf(chooser.getSelectedFile());
 
             competitors.clear();
 
@@ -305,7 +314,7 @@ public class Main {
             }
 
             try{
-                FileInputStream fis = new FileInputStream(importDirectory + "/list.trl");
+                FileInputStream fis = new FileInputStream(loadDirectory + "/list.trl");
                 DataInputStream in = new DataInputStream(fis);
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String line;
@@ -339,15 +348,15 @@ public class Main {
                 e.printStackTrace();
             }
         }else {
-            importStatus = false;
+            loadStatus = false;
             JOptionPane.showMessageDialog(null, "No session folder is selected", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    private void importRatings() {
+    private void loadRatings() {
         for(String numberValue : competitors.keySet()) {
             try{
-                FileInputStream fis = new FileInputStream(importDirectory + "/ratings/" + numberValue + ".trr");
+                FileInputStream fis = new FileInputStream(loadDirectory + "/ratings/" + numberValue + ".trr");
                 DataInputStream in = new DataInputStream(fis);
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String line;
@@ -367,6 +376,35 @@ public class Main {
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void exportData() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File(directoryName));
+        chooser.setDialogTitle("Select session folder");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File srcDir = new File(directoryName);
+            File destDir = new File(String.valueOf(chooser.getSelectedFile()) + "/TuningRef");
+
+            boolean created = destDir.mkdir();
+
+            if(!created) {
+                JOptionPane.showMessageDialog(null, "Program folder could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                FileUtils.copyDirectory(srcDir, destDir);
+            }catch(IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Program folder could not be copied", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }else {
+            JOptionPane.showMessageDialog(null, "No device is selected", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
