@@ -2,42 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="810bfd11-d4db-49c0-a664-7a40e48748c9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jgoodies-common-1.8.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jgoodies-forms-1.9.0.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Add$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Add$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Add.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main$4.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main$5.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Main.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Table$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Table$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/Table.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/AbstractLayout.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/DimensionInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/GridConstraints.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/GridLayoutManager.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/HorizontalInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/LayoutState.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/Spacer.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/SupportCode.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/Util.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/TuningRef/com/intellij/uiDesigner/core/VerticalInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/com_jgoodies_jgoodies_forms_1_9_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Table.form" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Table.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TuningRef.iml" afterPath="$PROJECT_DIR$/TuningRef.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Add.java" afterPath="$PROJECT_DIR$/src/Add.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.form" afterPath="$PROJECT_DIR$/src/Main.form" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
     </list>
     <ignored path="TuningRef.iws" />
@@ -63,14 +28,14 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
+            <state relative-caret-position="255">
+              <caret line="274" column="52" selection-start-line="274" selection-start-column="52" selection-end-line="274" selection-end-column="52" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1011#1029#0" expanded="true" />
                 <element signature="e#1099#1117#0" expanded="true" />
-                <element signature="e#3897#3898#0" expanded="true" />
-                <element signature="e#3947#3948#0" expanded="true" />
+                <element signature="e#3485#3486#0" expanded="true" />
+                <element signature="e#3535#3536#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,8 +56,8 @@
       <file leaf-file-name="Table.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Table.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="53" column="73" selection-start-line="53" selection-start-column="73" selection-end-line="53" selection-end-column="73" />
+            <state relative-caret-position="241">
+              <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#745#746#0" expanded="true" />
@@ -613,8 +578,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1011#1029#0" expanded="true" />
             <element signature="e#1099#1117#0" expanded="true" />
-            <element signature="e#3897#3898#0" expanded="true" />
-            <element signature="e#3947#3948#0" expanded="true" />
+            <element signature="e#3485#3486#0" expanded="true" />
+            <element signature="e#3535#3536#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -687,18 +652,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Table.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="53" column="73" selection-start-line="53" selection-start-column="73" selection-end-line="53" selection-end-column="73" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#745#746#0" expanded="true" />
-            <element signature="e#789#790#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Add.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="143">
@@ -709,16 +662,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Table.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#745#746#0" expanded="true" />
+            <element signature="e#789#790#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
+        <state relative-caret-position="255">
+          <caret line="274" column="52" selection-start-line="274" selection-start-column="52" selection-end-line="274" selection-end-column="52" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1011#1029#0" expanded="true" />
             <element signature="e#1099#1117#0" expanded="true" />
-            <element signature="e#3897#3898#0" expanded="true" />
-            <element signature="e#3947#3948#0" expanded="true" />
+            <element signature="e#3485#3486#0" expanded="true" />
+            <element signature="e#3535#3536#0" expanded="true" />
           </folding>
         </state>
       </provider>

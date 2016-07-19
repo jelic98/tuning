@@ -52,16 +52,6 @@ public class Main {
                     if(selectedIndex != -1) {
                         model.removeRow(selectedIndex);
                         competitors.remove(numberValue);
-
-                        for(String classValue : classes.keySet()) {
-                            String[] data = classes.get(classValue);
-
-                            for(int i = 0; i < data.length; i++) {
-                                if(data[i].equals(numberValue)) {
-                                    data[i] = "";
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -251,6 +241,8 @@ public class Main {
         try {
             PrintWriter w = new PrintWriter(directoryName + "/" + session + "/result.txt", "UTF-8");
 
+            classes.clear();
+
             for(String numberValue : competitors.keySet()) {
                 String[] data = competitors.get(numberValue);
 
@@ -274,15 +266,17 @@ public class Main {
             for(String classValue : classes.keySet()) {
                 String[] numbers = classes.get(classValue);
 
-                for(int i = 0; i < numbers.length; i++) {
-                    String[] data = competitors.get(numbers[i]);
+                for(String number : numbers) {
+                    if(!number.isEmpty()) {
+                        String[] data = competitors.get(number);
 
-                    String nameValue = data[0];
-                    String vehicleValue = data[1];
-                    String ratedValue = data[3];
+                        String nameValue = data[0];
+                        String vehicleValue = data[1];
+                        String ratedValue = data[3];
 
-                    if(ratedValue.equals("YES")) {
-                        //todo get rating file, calculate rating, sort array
+                        if(ratedValue.equals("YES")) {
+                            //todo get rating file, calculate rating, sort array
+                        }
                     }
                 }
             }
@@ -307,7 +301,6 @@ public class Main {
             importDirectory = String.valueOf(chooser.getSelectedFile());
 
             competitors.clear();
-            classes.clear();
 
             for(int i = Table.model.getRowCount() - 1; i >= 0; i--) {
                 Table.model.removeRow(i);
