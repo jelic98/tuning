@@ -1,10 +1,11 @@
+import javafx.scene.control.Tab;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -13,16 +14,15 @@ import java.util.*;
 
 public class Main {
     private JPanel panel;
-    private JTable table;
     private JButton bExport, bImport, bResults, bAdd, bRemove;
     private JLabel lEcloga;
-    private JScrollPane scrollPane;
-    private static DefaultTableModel model;
     private String directoryName = System.getProperty("user.home") + "/TuningRef";
     private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private Date date = new Date();
     private String session = dateFormat.format(date);
-    private boolean exportStatus;
+    private boolean exportStatus, importStatus;
+    private String importDirectory;
+    public static boolean tableShown;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static Map<String, String[]> classes = new HashMap<String, String[]>();
     private static Map<String, String[]> competitors = new HashMap<String, String[]>();
@@ -31,26 +31,6 @@ public class Main {
         bAdd.setForeground(Color.GREEN);
         bRemove.setForeground(Color.RED);
         lEcloga.setForeground(Color.DARK_GRAY);
-
-        model = new DefaultTableModel();
-
-        table = new JTable(model) {
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        String[] columns = {"Number", "Name", "Vehicle", "Class", "Rated"};
-
-        for(String value : columns) {
-            model.addColumn(value);
-        }
-
-        table.setPreferredScrollableViewportSize(new Dimension(screenSize.width, screenSize.height));
-        table.setFillsViewportHeight(true);
-        table.getTableHeader().setReorderingAllowed(false);
-
-        scrollPane = new JScrollPane(table);
 
         bAdd.addActionListener(new ActionListener() {
             @Override
@@ -63,18 +43,26 @@ public class Main {
         bRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                int selectedIndex = table.getSelectedRow();
+                if(tableShown) {
+                    DefaultTableModel model = (DefaultTableModel) Table.table.getModel();
+                    int selectedIndex = Table.table.getSelectedRow();
 
-                String numberValue = String.valueOf(table.getValueAt(selectedIndex, 0));
-                String nameValue = String.valueOf(table.getValueAt(selectedIndex, 1));
-                String vehicleValue = String.valueOf(table.getValueAt(selectedIndex, 2));
-                String classValue = String.valueOf(table.getValueAt(selectedIndex, 3));
-                String ratedValue = String.valueOf(table.getValueAt(selectedIndex, 4));
+                    String numberValue = String.valueOf(Table.table.getValueAt(selectedIndex, 0));
 
-                if(selectedIndex != -1) {
-                    model.removeRow(selectedIndex);
-                    competitors.remove(numberValue);
+                    if(selectedIndex != -1) {
+                        model.removeRow(selectedIndex);
+                        competitors.remove(numberValue);
+
+                        for(String classValue : classes.keySet()) {
+                            String[] data = classes.get(classValue);
+
+                            for(int i = 0; i < data.length; i++) {
+                                if(data[i].equals(numberValue)) {
+                                    data[i] = "";
+                                }
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -111,7 +99,14 @@ public class Main {
         bImport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                importStatus = true;
+                importDirectory = "";
+
                 importData();
+
+                if(importStatus) {
+                    importRatings();
+                }
             }
         });
 
@@ -126,11 +121,16 @@ public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setTitle("TuningRef");
-        frame.setSize(new Dimension(screenSize.width, screenSize.height));
+        frame.setSize(new Dimension((int) (screenSize.width * 0.25), screenSize.height));
+        frame.setLocation(screenSize.width / 2 - (int) (screenSize.width * 0.25) / 2, screenSize.height);
         frame.setContentPane(new Main().panel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.setVisible(true);
+
+        Table tableWindow = new Table();
+        tableWindow.show();
+        tableShown = true;
     }
 
     public void addRow(Object[] row) {
@@ -143,8 +143,8 @@ public class Main {
         String[] info = {nameValue, vehicleValue, classValue, ratedValue};
         competitors.put(numberValue, info);
 
-        model.addRow(row);
-        table.setModel(model);
+        Table.model.addRow(row);
+        Table.table.setModel(Table.model);
     }
 
     private void createProgramDirectory() {
@@ -186,7 +186,7 @@ public class Main {
 
                 boolean created = dir.mkdir();
 
-                if (!created) {
+                if(!created) {
                     exportStatus = false;
                     JOptionPane.showMessageDialog(null, "Rating directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -297,9 +297,66 @@ public class Main {
     }
 
     private void importData() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File(directoryName));
+        chooser.setDialogTitle("Select session folder");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            importDirectory = String.valueOf(chooser.getSelectedFile());
+
+            competitors.clear();
+            classes.clear();
+
+            for(int i = Table.model.getRowCount() - 1; i >= 0; i--) {
+                Table.model.removeRow(i);
+            }
+
+            try{
+                FileInputStream fis = new FileInputStream(importDirectory + "/list.trl");
+                DataInputStream in = new DataInputStream(fis);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String line;
+                int i = 0;
+
+                while((line = br.readLine()) != null) {
+                    i++;
+
+                    String numberValue = line.substring(0, line.indexOf(":"));
+                    line = line.replaceFirst(numberValue + ":", "");
+
+                    String nameValue = line.substring(0, line.indexOf(":"));
+                    line = line.replaceFirst(nameValue + ":", "");
+
+                    String vehicleValue = line.substring(0, line.indexOf(":"));
+                    line = line.replaceFirst(vehicleValue + ":", "");
+
+                    String classValue = line.substring(0, line.indexOf(":"));
+                    line = line.replaceFirst(classValue + ":", "");
+
+                    String ratedValue = line;
+
+                    String[] info = {nameValue, vehicleValue, classValue, ratedValue};
+
+                    competitors.put(numberValue, info);
+                    addRow(new Object[]{numberValue, nameValue, vehicleValue, classValue, ratedValue});
+                }
+
+                in.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            importStatus = false;
+            JOptionPane.showMessageDialog(null, "No session folder is selected", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void importRatings() {
         for(String numberValue : competitors.keySet()) {
             try{
-                FileInputStream fis = new FileInputStream(directoryName + "/" + session + "/ratings/" + numberValue + ".trr");
+                FileInputStream fis = new FileInputStream(importDirectory + "/ratings/" + numberValue + ".trr");
                 DataInputStream in = new DataInputStream(fis);
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String line;

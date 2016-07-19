@@ -22,7 +22,7 @@ public class Add {
             public void actionPerformed(ActionEvent e) {
                 String nameValue = tfName.getText();
                 String vehicleValue = tfVehicle.getText();
-                String classValue = tfClass.getText();
+                String classValue = tfClass.getText().toLowerCase();
                 String ratedValue = "NO";
 
                 if(nameValue.isEmpty() || vehicleValue.isEmpty() || classValue.isEmpty()) {
