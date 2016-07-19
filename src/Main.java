@@ -1,5 +1,3 @@
-import javafx.scene.control.Tab;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,7 +12,7 @@ import java.util.*;
 
 public class Main {
     private JPanel panel;
-    private JButton bExport, bImport, bResults, bAdd, bRemove;
+    private JButton bSave, bLoad, bResults, bAdd, bRemove;
     private JLabel lEcloga;
     private String directoryName = System.getProperty("user.home") + "/TuningRef";
     private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -57,7 +55,7 @@ public class Main {
             }
         });
 
-        bExport.addActionListener(new ActionListener() {
+        bSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 exportStatus = true;
@@ -86,7 +84,7 @@ public class Main {
             }
         });
 
-        bImport.addActionListener(new ActionListener() {
+        bLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 importStatus = true;

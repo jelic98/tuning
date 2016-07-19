@@ -21,16 +21,16 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="328d7" class="javax.swing.JButton" binding="bExport">
+          <component id="328d7" class="javax.swing.JButton" binding="bSave">
             <constraints/>
             <properties>
-              <text value="Export"/>
+              <text value="Save"/>
             </properties>
           </component>
-          <component id="9674c" class="javax.swing.JButton" binding="bImport">
+          <component id="9674c" class="javax.swing.JButton" binding="bLoad">
             <constraints/>
             <properties>
-              <text value="Import"/>
+              <text value="Load"/>
             </properties>
           </component>
           <component id="c2955" class="javax.swing.JButton" binding="bResults">
