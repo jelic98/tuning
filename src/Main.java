@@ -7,13 +7,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
     private JPanel panel;
@@ -23,20 +22,15 @@ public class Main {
     private JScrollPane scrollPane;
     private static DefaultTableModel model;
     private String directoryName = System.getProperty("user.home") + "/TuningRef";
-    private String session ;
+    private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private Date date = new Date();
+    private String session = dateFormat.format(date);
     private boolean exportStatus;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static Map<String, String[]> classes = new HashMap<String, String[]>();
     private static Map<String, String[]> competitors = new HashMap<String, String[]>();
-    public static int total;
 
     public Main() {
-        total = 0;
-
-        Date date = new Date();
-        session = dateFormat.format(date);
-
         bAdd.setForeground(Color.GREEN);
         bRemove.setForeground(Color.RED);
         lEcloga.setForeground(Color.DARK_GRAY);
@@ -65,7 +59,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Add add = new Add();
-                add.show(total);
+                add.show(competitors.size());
             }
         });
 
@@ -75,7 +69,7 @@ public class Main {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 int selectedIndex = table.getSelectedRow();
 
-                int numberValue = (int) table.getValueAt(selectedIndex, 0);
+                String numberValue = String.valueOf(table.getValueAt(selectedIndex, 0));
                 String nameValue = String.valueOf(table.getValueAt(selectedIndex, 1));
                 String vehicleValue = String.valueOf(table.getValueAt(selectedIndex, 2));
                 String classValue = String.valueOf(table.getValueAt(selectedIndex, 3));
@@ -83,7 +77,7 @@ public class Main {
 
                 if(selectedIndex != -1) {
                     model.removeRow(selectedIndex);
-                    competitors.remove(String.valueOf(numberValue));
+                    competitors.remove(numberValue);
                 }
             }
         });
@@ -169,27 +163,35 @@ public class Main {
     }
 
     private void createSessionDirectory() {
-        try {
-            File file = new File(directoryName + "/" + session);
-            boolean created = file.mkdir();
+        if(!Files.exists(Paths.get(directoryName + "/" + session))) {
+            try {
+                File file = new File(directoryName + "/" + session);
+                boolean created = file.mkdir();
 
-            if(!created) {
-                exportStatus = false;
-                JOptionPane.showMessageDialog(null, "Session directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+                if (!created) {
+                    exportStatus = false;
+                    JOptionPane.showMessageDialog(null, "Session directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
             }
-        }catch(Exception e) {
-            e.printStackTrace();
         }
     }
 
     private void createRatingDirectory() {
-        File dir = new File(directoryName + "/" + session + "/ratings");
+        if(!Files.exists(Paths.get(directoryName + "/" + session + "/ratings"))) {
+            try {
+                File dir = new File(directoryName + "/" + session + "/ratings");
 
-        boolean created = dir.mkdir();
+                boolean created = dir.mkdir();
 
-        if(!created) {
-            exportStatus = false;
-            JOptionPane.showMessageDialog(null, "Rating directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+                if (!created) {
+                    exportStatus = false;
+                    JOptionPane.showMessageDialog(null, "Rating directory could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -202,10 +204,10 @@ public class Main {
 
                 String nameValue = data[0];
                 String vehicleValue = data[1];
-                String classesValue = data[2];
+                String classValue = data[2];
                 String ratedValue = data[3];
 
-                w.println(numberValue + ":" + nameValue + ":" + vehicleValue + ":" + classesValue + ":" + ratedValue);
+                w.println(numberValue + ":" + nameValue + ":" + vehicleValue + ":" + classValue + ":" + ratedValue);
             }
 
             w.close();
@@ -222,25 +224,25 @@ public class Main {
             for(String numberValue : competitors.keySet()) {
                 String[] data = competitors.get(numberValue);
 
-                String classesValue = data[2];
+                String classValue = data[2];
 
-                if(classes.get(classesValue) == null) {
+                if(classes.get(classValue) == null) {
                     String[] numbers = {numberValue};
-                    classes.put(classesValue, numbers);
+                    classes.put(classValue, numbers);
                 }else {
-                    String[] oldNumbers = classes.get(classesValue);
+                    String[] oldNumbers = classes.get(classValue);
                     String[] numbers = new String[oldNumbers.length + 1];
 
                     System.arraycopy(oldNumbers, 0, numbers, 0, oldNumbers.length);
                     numbers[oldNumbers.length] = numberValue;
 
-                    classes.remove(classesValue);
-                    classes.put(classesValue, numbers);
+                    classes.remove(classValue);
+                    classes.put(classValue, numbers);
                 }
-            }
 
-            for(String classValue : classes.keySet()) {
-                System.out.println(classValue);
+//                for(String element : classes.keySet()) {
+//                    w.println(element + " " + Arrays.toString(classes.get(element)));
+//                }
             }
 
             w.close();
