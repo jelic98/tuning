@@ -3,10 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -98,6 +95,10 @@ public class Main {
                 }
 
                 if(exportStatus) {
+                    createRatingFiles();
+                }
+
+                if(exportStatus) {
                     createListFile();
                 }
 
@@ -110,7 +111,7 @@ public class Main {
         bImport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                importData();
             }
         });
 
@@ -195,6 +196,35 @@ public class Main {
         }
     }
 
+    private void createRatingFiles() {
+        boolean status = true;
+
+        for(String numberValue : competitors.keySet()) {
+            String[] data = competitors.get(numberValue);
+
+            String ratedValue = data[3];
+
+            try {
+                PrintWriter w = new PrintWriter(directoryName + "/" + session + "/ratings/" + numberValue + ".trr", "UTF-8");
+
+                if(ratedValue.equals("NO")) {
+                    w.println(ratedValue);
+                }else {
+                    //todo get current rating
+                }
+
+                w.close();
+            }catch(FileNotFoundException | UnsupportedEncodingException e) {
+                status = false;
+                e.printStackTrace();
+            }
+        }
+
+        if(!status) {
+            JOptionPane.showMessageDialog(null, "Competitor ratings could not be generated", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void createListFile() {
         try {
             PrintWriter w = new PrintWriter(directoryName + "/" + session + "/list.trl", "UTF-8");
@@ -263,6 +293,32 @@ public class Main {
         }catch(FileNotFoundException | UnsupportedEncodingException e) {
             JOptionPane.showMessageDialog(null, "Results could not be generated", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+        }
+    }
+
+    private void importData() {
+        for(String numberValue : competitors.keySet()) {
+            try{
+                FileInputStream fis = new FileInputStream(directoryName + "/" + session + "/ratings/" + numberValue + ".trr");
+                DataInputStream in = new DataInputStream(fis);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String line;
+                int i = 0;
+
+                while((line = br.readLine()) != null) {
+                    i++;
+
+                    if(line.equals("NO")) {
+                        break;
+                    }else {
+                        //todo extract ratings
+                    }
+                }
+
+                in.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
