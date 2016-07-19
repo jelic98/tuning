@@ -7,10 +7,12 @@ public class Add {
     private JPanel panel;
     private JButton bDone;
     private JTextField tfName, tfVehicle, tfClass;
+    private JButton bCancel;
     private static JFrame frame;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) (screenSize.getWidth() * 0.25);
     private static int height = (int) (screenSize.getHeight() * 0.5);
+    private int numberValue;
 
     public Add() {
         frame = new JFrame();
@@ -18,7 +20,6 @@ public class Add {
         bDone.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int numberValue = 0;
                 String nameValue = tfName.getText();
                 String vehicleValue = tfVehicle.getText();
                 String classValue = tfClass.getText();
@@ -30,13 +31,24 @@ public class Add {
                     Main main = new Main();
                     main.addRow(new Object[]{numberValue, nameValue, vehicleValue, classValue, ratedValue});
 
+                    Main.total++;
+
                     frame.dispose();
                 }
             }
         });
+
+        bCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
     }
 
-    public void show() {
+    public void show(int total) {
+        numberValue = total;
+
         frame.setTitle("Add competitor");
         frame.setSize(new Dimension(width, height));
         frame.setLocation(screenSize.width / 2 - width / 2,screenSize.height / 2 - height / 2);
