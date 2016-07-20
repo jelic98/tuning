@@ -31,6 +31,8 @@ public class Add {
                     Main main = new Main();
                     main.addRow(new Object[]{numberValue, nameValue, vehicleValue, classValue, ratedValue});
 
+                    Main.total++;
+
                     frame.dispose();
                 }
             }

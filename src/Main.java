@@ -23,9 +23,12 @@ public class Main {
     private boolean saveStatus, loadStatus;
     private String loadDirectory;
     public static boolean tableShown;
+    public static int total;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static Map<String, String[]> classes = new HashMap<String, String[]>();
     private static Map<String, String[]> competitors = new HashMap<String, String[]>();
+    private static Map<String, String[]> ratings = new HashMap<String, String[]>();
+    private static Map<String, String> results = new HashMap<String, String>();
 
     public Main() {
         bAdd.setForeground(Color.GREEN);
@@ -36,7 +39,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Add add = new Add();
-                add.show(competitors.size());
+                add.show(total);
             }
         });
 
@@ -128,6 +131,8 @@ public class Main {
         Table tableWindow = new Table();
         tableWindow.show();
         tableShown = true;
+
+        total = 0;
     }
 
     public void addRow(Object[] row) {
@@ -196,18 +201,28 @@ public class Main {
     private void createRatingFiles() {
         boolean status = true;
 
+        File folder = new File(directoryName + "/" + session + "/ratings");
+        File[] files = folder.listFiles();
+
+        if(files != null) {
+            for(File f : files) {
+                f.delete();
+            }
+        }
+
         for(String numberValue : competitors.keySet()) {
             String[] data = competitors.get(numberValue);
-
-            String ratedValue = data[3];
 
             try {
                 PrintWriter w = new PrintWriter(directoryName + "/" + session + "/ratings/" + numberValue + ".trr", "UTF-8");
 
-                if(ratedValue.equals("NO")) {
-                    w.println(ratedValue);
-                }else {
-                    //todo get current rating
+                if(ratings.size() > 0) {
+                    String[] rating = ratings.get(numberValue);
+
+                    for(String element : rating) {
+                        w.println(element);
+                    }
+
                 }
 
                 w.close();
@@ -270,6 +285,8 @@ public class Main {
                 }
             }
 
+            results.clear();
+
             for(String classValue : classes.keySet()) {
                 String[] numbers = classes.get(classValue);
 
@@ -277,12 +294,65 @@ public class Main {
                     if(!number.isEmpty()) {
                         String[] data = competitors.get(number);
 
-                        String nameValue = data[0];
-                        String vehicleValue = data[1];
                         String ratedValue = data[3];
 
                         if(ratedValue.equals("YES")) {
-                            //todo get rating file, calculate rating, sort array
+                            try{
+                                FileInputStream fis = new FileInputStream(loadDirectory + "/ratings/" + number + ".trr");
+                                DataInputStream in = new DataInputStream(fis);
+                                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                                String line;
+                                int i = 0;
+
+                                while((line = br.readLine()) != null) {
+                                    i++;
+                                }
+
+                                int[] rating = new int[i];
+                                int sum = 0;
+
+                                i = 0;
+
+                                while((line = br.readLine()) != null) {
+                                    rating[i] = Integer.parseInt(line);
+                                    sum += rating[i];
+
+                                    i++;
+                                }
+
+                                results.put(number, String.valueOf(sum));
+
+                                in.close();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(String classValue : classes.keySet()) {
+                String[] numbers = classes.get(classValue);
+
+                for(int i = 0; i < numbers.length; i++) {
+                    String[] data1 = competitors.get(numbers[i]);
+                    String ratedValue1 = data1[3];
+
+                    if(ratedValue1.equals("YES")) {
+                        for (int j = 1; j < numbers.length - i; j++) {
+                            String[] data2 = competitors.get(numbers[j]);
+                            String ratedValue2 = data2[3];
+
+                            if(ratedValue2.equals("YES")) {
+                                int number1 = Integer.parseInt(results.get(numbers[j - 1]));
+                                int number2 = Integer.parseInt(results.get(numbers[j]));
+                                
+                                if(number1 > number2) {
+                                    String temp = String.valueOf(number1);
+                                    results.put(numbers[j - 1], String.valueOf(number2));
+                                    results.put(numbers[j], temp);
+                                }
+                            }
                         }
                     }
                 }
@@ -341,6 +411,10 @@ public class Main {
 
                     competitors.put(numberValue, info);
                     addRow(new Object[]{numberValue, nameValue, vehicleValue, classValue, ratedValue});
+
+                    if(Integer.parseInt(numberValue) > total) {
+                        total = Integer.parseInt(numberValue);
+                    }
                 }
 
                 in.close();
@@ -354,6 +428,8 @@ public class Main {
     }
 
     private void loadRatings() {
+        ratings.clear();
+
         for(String numberValue : competitors.keySet()) {
             try{
                 FileInputStream fis = new FileInputStream(loadDirectory + "/ratings/" + numberValue + ".trr");
@@ -364,13 +440,19 @@ public class Main {
 
                 while((line = br.readLine()) != null) {
                     i++;
-
-                    if(line.equals("NO")) {
-                        break;
-                    }else {
-                        //todo extract ratings
-                    }
                 }
+
+                String[] rating = new String[i];
+
+                i = 0;
+
+                while((line = br.readLine()) != null) {
+                    rating[i] = line;
+
+                    i++;
+                }
+
+                ratings.put(numberValue, rating);
 
                 in.close();
             }catch (Exception e){
