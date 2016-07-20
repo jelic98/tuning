@@ -216,7 +216,7 @@ public class Main {
             try {
                 PrintWriter w = new PrintWriter(directoryName + "/" + session + "/ratings/" + numberValue + ".trr", "UTF-8");
 
-                if(ratings.size() > 0) {
+                if(!ratings.isEmpty()) {
                     String[] rating = ratings.get(numberValue);
 
                     for(String element : rating) {
@@ -261,7 +261,7 @@ public class Main {
 
     private void createResultFile() {
         try {
-            PrintWriter w = new PrintWriter(directoryName + "/" + session + "/result.txt", "UTF-8");
+            PrintWriter w = new PrintWriter(directoryName + "/" + session + "/results.txt", "UTF-8");
 
             classes.clear();
 
@@ -346,16 +346,24 @@ public class Main {
                             if(ratedValue2.equals("YES")) {
                                 int number1 = Integer.parseInt(results.get(numbers[j - 1]));
                                 int number2 = Integer.parseInt(results.get(numbers[j]));
-                                
+
                                 if(number1 > number2) {
                                     String temp = String.valueOf(number1);
-                                    results.put(numbers[j - 1], String.valueOf(number2));
-                                    results.put(numbers[j], temp);
+                                    numbers[j - 1] = String.valueOf(number2);
+                                    numbers[j] = temp;
                                 }
                             }
                         }
                     }
                 }
+
+                w.println(classValue);
+
+                for(int i = 0; i < numbers.length; i++) {
+                    w.println(numbers[i]);
+                }
+
+                w.println("\n");
             }
 
             w.close();
@@ -437,17 +445,19 @@ public class Main {
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String line;
                 int i = 0;
+                ArrayList<String> temp = new ArrayList<String>();
 
                 while((line = br.readLine()) != null) {
+                    temp.add(line);
                     i++;
                 }
 
-                String[] rating = new String[i];
+                String[] rating = new String[i + 1];
 
                 i = 0;
 
-                while((line = br.readLine()) != null) {
-                    rating[i] = line;
+                for(String t : temp) {
+                    rating[i] = t;
 
                     i++;
                 }
