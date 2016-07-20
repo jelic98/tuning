@@ -24,6 +24,7 @@ public class Main {
     private String loadDirectory;
     public static boolean tableShown;
     public static int total;
+    private static Table tableWindow;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static Map<String, String[]> classes = new HashMap<String, String[]>();
     private static Map<String, String[]> competitors = new HashMap<String, String[]>();
@@ -56,6 +57,8 @@ public class Main {
                         model.removeRow(selectedIndex);
                         competitors.remove(numberValue);
                     }
+                }else {
+                    JOptionPane.showMessageDialog(null, "No competitor is selected", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -100,6 +103,9 @@ public class Main {
                 if(loadStatus) {
                     loadRatings();
                 }
+
+                tableWindow.show();
+                tableShown = true;
             }
         });
 
@@ -128,7 +134,7 @@ public class Main {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        Table tableWindow = new Table();
+        tableWindow = new Table();
         tableWindow.show();
         tableShown = true;
 
@@ -144,6 +150,9 @@ public class Main {
 
         String[] info = {nameValue, vehicleValue, classValue, ratedValue};
         competitors.put(numberValue, info);
+
+        String[] empty = {""};
+        ratings.put(numberValue, empty);
 
         Table.model.addRow(row);
         Table.table.setModel(Table.model);
@@ -290,31 +299,33 @@ public class Main {
             for(String classValue : classes.keySet()) {
                 String[] numbers = classes.get(classValue);
 
-                for(String number : numbers) {
-                    if(!number.isEmpty()) {
+                for (String number : numbers) {
+                    if (!number.isEmpty()) {
                         String[] data = competitors.get(number);
 
                         String ratedValue = data[3];
 
-                        if(ratedValue.equals("YES")) {
-                            try{
+                        if (ratedValue.equals("YES")) {
+                            try {
                                 FileInputStream fis = new FileInputStream(loadDirectory + "/ratings/" + number + ".trr");
                                 DataInputStream in = new DataInputStream(fis);
                                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                                 String line;
                                 int i = 0;
+                                ArrayList<String> temp = new ArrayList<String>();
 
-                                while((line = br.readLine()) != null) {
+                                while ((line = br.readLine()) != null) {
+                                    temp.add(line);
                                     i++;
                                 }
 
-                                int[] rating = new int[i];
+                                int[] rating = new int[i + 1];
                                 int sum = 0;
 
                                 i = 0;
 
-                                while((line = br.readLine()) != null) {
-                                    rating[i] = Integer.parseInt(line);
+                                for (String t : temp) {
+                                    rating[i] = Integer.parseInt(t);
                                     sum += rating[i];
 
                                     i++;
@@ -323,7 +334,7 @@ public class Main {
                                 results.put(number, String.valueOf(sum));
 
                                 in.close();
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -339,17 +350,17 @@ public class Main {
                     String ratedValue1 = data1[3];
 
                     if(ratedValue1.equals("YES")) {
-                        for (int j = 1; j < numbers.length - i; j++) {
+                        for(int j = 1; j < numbers.length - i; j++) {
                             String[] data2 = competitors.get(numbers[j]);
                             String ratedValue2 = data2[3];
 
                             if(ratedValue2.equals("YES")) {
-                                int number1 = Integer.parseInt(results.get(numbers[j - 1]));
-                                int number2 = Integer.parseInt(results.get(numbers[j]));
+                                String sum1 = results.get(numbers[j - 1]);
+                                String sum2 = results.get(numbers[j]);
 
-                                if(number1 > number2) {
-                                    String temp = String.valueOf(number1);
-                                    numbers[j - 1] = String.valueOf(number2);
+                                if(Integer.parseInt(sum1) < Integer.parseInt(sum2)) {
+                                    String temp = numbers[j - 1];
+                                    numbers[j - 1] = numbers[j];
                                     numbers[j] = temp;
                                 }
                             }
@@ -357,13 +368,22 @@ public class Main {
                     }
                 }
 
-                w.println(classValue);
+                w.println("Class: " + classValue);
 
                 for(int i = 0; i < numbers.length; i++) {
-                    w.println(numbers[i]);
+                    String numberValue = numbers[i];
+
+                    String[] data = competitors.get(numberValue);
+
+                    String nameValue = data[0];
+                    String vehicleValue = data[1];
+
+                    String rating = results.get(numberValue);
+
+                    w.println(nameValue + "[" + numberValue + "] " + vehicleValue + "(" + rating + " pts)");
                 }
 
-                w.println("\n");
+                w.println("");
             }
 
             w.close();
